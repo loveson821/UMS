@@ -5,6 +5,9 @@ from django.views.generic import TemplateView
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from djrill import DjrillAdminSite
+
+admin.site = DjrillAdminSite()
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -20,6 +23,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
     url(r'^accounts/', include('allauth.urls')),
+    url(r'^profile/', include('userprofile.urls', namespace='profile')),
 )
 
 # Uncomment the next line to serve media files in dev.
