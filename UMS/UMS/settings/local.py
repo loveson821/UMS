@@ -19,7 +19,7 @@ TEMPLATE_DEBUG = DEBUG
 ########## EMAIL CONFIGURATION
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-MANDRILL_API_KEY = 'yourkey'
+MANDRILL_API_KEY = 'mandrill-key'
 DEFAULT_FROM_EMAIL = 'example@gmail.com'
 EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
 ########## END EMAIL CONFIGURATION

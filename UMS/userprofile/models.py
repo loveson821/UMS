@@ -1,10 +1,13 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
-from django import forms
+from django.core.urlresolvers import reverse
+from allauth.socialaccount.models import SocialAccount
+import hashlib
 
+from sorl.thumbnail import ImageField
 import pytz
- 
+
 class UserProfile(models.Model):
     POSITION_CHOICES = (
         ('nb','New bird'),
@@ -15,6 +18,7 @@ class UserProfile(models.Model):
     TIMEZONES = [(tz, tz) for tz in pytz.all_timezones]
 
     user = models.OneToOneField(User, related_name='profile')
+    avator = ImageField(upload_to='user_profile_imgs')
     address = models.CharField(max_length=140, blank=True)
     phone_number = models.CharField(max_length=20)
     role = models.CharField(max_length=3, choices=POSITION_CHOICES, default='nb')
@@ -26,35 +30,28 @@ class UserProfile(models.Model):
     def get_field_values(self):
         return [(field.verbose_name, field.value_to_string(self)) for field in UserProfile._meta.fields]
 
+    def profile_image_url(self):
+        if self.avator:
+            return self.avator.url
+
+        fb_uid = SocialAccount.objects.filter(user_id=self.user.id, provider='facebook')
+        if len(fb_uid):
+            return "http://graph.facebook.com/{}/picture?width=40&height=40".format(fb_uid[0].uid)
+     
+        return "http://www.gravatar.com/avatar/{}?s=100&d=wavatar".format(hashlib.md5(self.user.email).hexdigest())
+
     # def get_absolute_url(self):
     #     return reverse("npp/nonprofit_detail", kwargs={"slug": self.slug}) 
 
     class Meta:
         db_table = 'user_profile'
 
-class UserProfileForm(forms.ModelForm):
-    first_name = forms.CharField(max_length=30)
-    last_name = forms.CharField(max_length=30)
+class Ablum(models.Model):
+    owner = models.ForeignKey(UserProfile, related_name="ablum")
+    image = ImageField(upload_to='user_ablum')
 
-    def __init__(self, *args, **kwargs):
-        super(UserProfileForm, self).__init__(*args, **kwargs)
-        self.fields['first_name'].initial = self.instance.user.first_name
-        self.fields['last_name'].initial = self.instance.user.last_name
-
-        self.fields.keyOrder = [
-            'first_name',
-            'last_name',
-            'address',
-            'phone_number',
-            'role',
-            'timezone'
-        ]
-
-    def save(self, *args, **kwargs):
-        super(UserProfileForm, self).save(*args, **kwargs)
-        self.instance.user.first_name = self.cleaned_data.get('first_name')   
-        self.instance.user.last_name = self.cleaned_data.get('last_name')
-        self.instance.user.save()
-
-    class Meta:
-        model = UserProfile
+    def get_absolute_url(self):
+        return reverse('profile:ablum', kwargs={
+            'pk': self.owner.id,
+            'ablum_pk': self.id    
+        })

@@ -45,7 +45,9 @@
           <ul class="nav navbar-nav">
             {% if user.is_authenticated %}
               <li><a href="/accounts/logout">Logout</a></li>
+              {% if user.profile %}
               <li><a href="{% url 'profile:detail' user.profile.id %}">Profile</a></li>
+              {% endif %}
             {% else %}
               <li><a href="/accounts/signup">Signup</a></li>
               <li><a href="/accounts/login">Login</a></li>
@@ -70,6 +72,10 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/jquery.ui.widget.js' %}"></script>
+    <script src="{% static 'js/jquery.iframe-transport.js' %}"></script>
+    <script src="{% static 'js/jquery.fileupload.js' %}"></script>
+    <script src="{% static 'js/jquery.knob.min.js' %}"></script>
 
     <!-- place project specific Javascript in this file -->
     <script src="{% static 'js/UMS.js' %}"></script>

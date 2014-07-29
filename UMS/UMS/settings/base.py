@@ -266,6 +266,7 @@ WSGI_APPLICATION = '%s.wsgi.application' % SITE_NAME
 INSTALLED_APPS += (
     # Database migration helpers:
     'south',
+    'sorl.thumbnail',
 )
 # Don't need to use South when setting up a test database.
 SOUTH_TESTS_MIGRATE = False
@@ -289,9 +290,13 @@ ACCOUNT_EMAIL_REQUIRED = True
 # Determines the e-mail verification method during signup – choose one of “mandatory”, “optional”, or “none”. When set to “mandatory” the user is blocked from logging in until the email address is verified. Choose “optional” or “none” to allow logins with an unverified e-mail address. In case of “optional”, the e-mail verification mail is still sent, whereas in case of “none” no e-mail verification mails are sent.
 # ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'
 
 AUTH_PROFILE_MODULE = 'UserProfile'
 ##########
 
+THUMBNAIL_DEBUG = True
 
+CONTENT_TYPES = ['image/png','image/jpg','image/jpeg',]
+MAX_UPLOAD_SIZE = "5242880" # 5MB
 

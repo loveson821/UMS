@@ -1,7 +1,8 @@
 {% extends "profile/base.html" %}
-
+{% load staticfiles %}
 {% load i18n %}
 {% load crispy_forms_tags %}
+{% load thumbnail %}
 
 {% block head_title %}{% trans "Sign In" %}{% endblock %}
 
@@ -10,6 +11,10 @@
   <div class="row">
     <div class="col-md-5">
 
+      <img src="{{ object.profile_image_url }}"/>
+      {% thumbnail object.avator "200" as im %}
+        <img src="{{ im.url }}">
+      {% endthumbnail %}
       <table>
         {% for name, value in object.get_field_values %}
             <tr>
@@ -18,6 +23,12 @@
             </tr>
         {% endfor %}
       </table>
+      {% for item in ablum %}
+        {% thumbnail item.image "200" as im %}
+          <img src="{{ im.url }}">
+        {% endthumbnail %}
+        <p>{{item.get_absolute_url}}</p>
+      {% endfor %}
     </div>
   </div>
 </div>
